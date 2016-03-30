@@ -37,27 +37,12 @@ class ViewController: UIViewController {
 	}
 
 	func searchLivePhoto() {
-		// I want to search the live photos with predicate, but cannot make predicate with OptionSetType in Swift.
-		/*
 		let opts = PHFetchOptions()
-		opts.predicate = NSPredicate(format: "mediaSubtypes.rawValue & %d != 0", PHAssetMediaSubtype.PhotoLive.rawValue)
+		opts.predicate = NSPredicate(format: "mediaSubtype & %d != 0", PHAssetMediaSubtype.PhotoLive.rawValue)
 		let result = PHAsset.fetchAssetsWithMediaType(.Image, options: opts)
-		*/
-		
-		// get all images
-		let result = PHAsset.fetchAssetsWithMediaType(.Image, options: nil)
-		var photoAsset: PHAsset?
-		result.enumerateObjectsWithOptions(.Reverse, usingBlock: { (obj, idx, stop) -> Void in
-			let asset = obj as! PHAsset
-			// search the latest live photo
-			if asset.mediaSubtypes.contains(.PhotoLive) {
-				photoAsset = asset
-				stop.memory = true
-			}
-		})
 		
 		// get live photo data
-		if let photoAsset = photoAsset {
+		if let photoAsset = result.lastObject as? PHAsset {
 			PHImageManager.defaultManager().requestLivePhotoForAsset(photoAsset, targetSize: CGSizeZero, contentMode: .Default, options: nil) { (livePhoto, info) -> Void in
 				if let livePhoto = livePhoto {
 					self.livePhotoView.livePhoto = livePhoto
